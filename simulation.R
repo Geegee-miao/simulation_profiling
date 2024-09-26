@@ -240,7 +240,159 @@ function (name, pos = -1L, envir = as.environment(pos), all.names = FALSE, patte
     > plot(x, y)
 
 
-Test pulling
+Test pulling ## Edit file directly on GitHub then commit. Next pull from console.
+
+
+## RANDOM SAMPLING
+
+## The 'sample' function draws randomly from a specified set of (scalar) objects allowing you to sample from arbitrary
+    ## distributions.
+
+> set.seed(1)
+
+> sample(1:10, 4)
+[1] 9 4 7 1
+
+
+> sample(1:10, 4)
+[1] 2 7 3 6
+
+
+> sample(letters, 5)
+[1] "r" "s" "a" "u" "w"
+
+> sample(1:10)  ## permutation. the vector is permutated in random order
+[1] 10  6  9  2  1  5  8  4  3  7
+
+
+> sample(1:10)
+[1]  5 10  2  8  6  1  4  3  9  7
+
+
+> sample(1:10, replace = TRUE)  ## Sample w/ replacement. Vector can be repeated
+[1]  3  6 10 10  6  4  4 10  9  7
+
+
+## Summary: Simulation
+
+    ## Drawing samples from specific probability distributions can be done with r* (rnorm, rpois, etc) functions.
+    ## Standard distributions are built in : Normal, Poisson, Binomial, Exponential, Gamma, etc
+    ## The 'sample' function can be used to draw random samples from arbitrary vectors.
+    ## Setting the random number generator seed via 'set.seed' is critical for reproducibility.
+
+
+
+## R PROFILER   
+
+## Handy when developing larger program or dealing with a larger database
+    ## Tells you why something is taking a long time to run and how to fix it
+
+## Why is my code so slow?
+
+    ## Profiling is a systematic way to examine how much time is spend in different parts of a program
+    ## Useful when trying to optimise your code
+    ## Often code runs fine once, but what if you have to put it in a loop for 1,000 iterations? Is it still fast enough?
+    ## Profiling is better than guessing
+
+
+## On Optimising Your Code
+
+    ## Getting biggest impact on speeding up code depends on knowing where the code spend most of its time.
+    ## This cannot be done without performance analysis or profiling
+
+        ## What is important is:
+            ## How to make the code to run
+            ## How to make it readable
+            ## How to make sure other people can understand what you're doing
+
+## GENERAL PRINCIPLES OF OPTIMISATION
+
+    ## Design first, then optimise
+    ## Remember: Premature optimisation is the root of all evil
+    ## Measure (collect data). Don't guess
+    ## If you're going to be scientist, you need to apply the same principles here!
+
+
+
+## Using 'system.time()
+
+    ## Takes an arbitrary R expression as input (can be wrapped in curly braces) and returns the amount of time taken
+        ## to evaluate the expression.
+
+    ## Computes the time (in seconds) needed to execute an expression
+            ## If there's an error, gives time until the error occurred.
+
+    ## Returns an object of class 'proc_time'
+            ## user time: time charged to the CPU(s) for running this expression
+            ## elapsed time: "wall clock" time. amount of time the user experience
+
+    ## Usually, the user time and elapsed time are relatively close, for straight computing tasks
+    ## Elapsed time may be greater than user time if the CPU spends a lot of time waiting around
+    ## Elapsed time may be smaller than the user time if your machine has multiple cores/processors (and is capable of using them)
+            ## Multi-threaded BLAS libraries (vecLib/Accelerate, ATLAS,ACML, MKL)
+            ## Parallel processing via the parallel package
+
+## Elapsed time > user time
+system.time(readLines("http://www.jhsph.edu")) ## use 'readLines' 
+
+## Elapsed time < user time
+hilbert <- function(n) {
+    i <- 1:n
+    1 / outer(i - 1, i, "+")
+}
+
+
+## TIMING LONGER EXPRESSIONS
+
+system.time({
+    n <- 1000
+    r <- numeric(n)
+    for (i in 1:n) {
+        x <- rnorm(n)
+        r[i] <-  mean(x)
+    }
+})
+
+user  system elapsed 
+0.099   0.001   0.103 
+
+
+## BEYONG 'system.time()'
+
+    ## Using 'system.time()' allows you to test certain functions or code blocks to see if they are taking excessive amount
+        ## of time
+    ## Assumes you already know where the problem is and can call 'system.time()' on it
+    ## What if you don't know where to start?
+
+
+## THE R PROFILER
+
+    ## The 'Rprof()' function starts the profiler in R
+        ## R must be compiled with profiler support (but this is usually the case)
+
+    ## The 'summaryRprof()' function summarises the output from 'Rprof()' (otherwise it's not readable)
+
+    ## DO NOT use 'system.time()' and 'Rprof()' together or you will be sad.
+
+    ## 'Rprof()' keeps track of the function call stack at regularly sampled imtervals and tabulates how much time is spend
+        ## in each function
+
+    ## Default sampling interval is 0.02 seconds
+
+    ## NOTE: If your code runs very quickly, the profiler is not useful, but then you probably don't need it in that case.
+
+
+## USING 'summaryRprof()'
+
+    ## The 'summaryRprof()' function tabulates the R profiler output and calculates how much time is spend in which function
+    ## There are two methods for normalising the data.
+    ## 'by.total' : divides the time spend in each function by the total run time
+    ## 'by.self' : does the same but first subtracts out time spent in functions above in the call stack
+
+
+
+
+
     
     
     
