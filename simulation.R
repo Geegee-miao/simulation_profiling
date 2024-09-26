@@ -390,6 +390,16 @@ user  system elapsed
     ## 'by.self' : does the same but first subtracts out time spent in functions above in the call stack
 
 
+## SUMMARY
+
+    ## 'Rprof()' runs the profiler for performance of analysis of R code
+
+    ## 'summaryRprof()' summarises the output of 'Rprof()' and gives percent of time spent in each function (with two types
+        ## of normalisaton)
+
+    ## Good to break your code into functions so that the profiler can give useful information about where time is being spent.
+    
+    ## C or Fortran code is not profiled.
 
 
 
