@@ -238,7 +238,9 @@ function (name, pos = -1L, envir = as.environment(pos), all.names = FALSE, patte
     Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
     0.00    1.00    1.00    1.55    2.00    6.00 
     > plot(x, y)
-    
+
+
+Test pulling
     
     
     
