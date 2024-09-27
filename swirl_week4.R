@@ -266,3 +266,318 @@ $ Temp_Min_F          : int  NA NA NA -43 NA NA NA NA -13 NA ...
 
 ...
 
+## Lesson 2: Simulation
+
+
+| One of the great advantages of using a statistical programming language like R is its vast
+| collection of tools for simulating random numbers.
+
+...
+
+  |===                                                                                   |   3%
+| This lesson assumes familiarity with a few common probability distributions, but these topics
+| will only be discussed with respect to random number generation. Even if you have no prior
+| experience with these concepts, you should be able to complete the lesson and understand the
+| main ideas.
+
+...
+
+  |=====                                                                                 |   6%
+| The first function we'll use to generate random numbers is sample().
+
+
+|========                                                                              |   9%
+| Let's simulate rolling four six-sided dice: sample(1:6, 4, replace = TRUE).
+
+> sample(1:6, 4, replace = TRUE)
+[1] 3 6 3 2
+
+  |==========                                                                            |  12%
+| Now repeat the command to see how your result differs. (The probability of rolling the exact
+| same result is (1/6)^4 = 0.00077, which is pretty small!)
+
+> sample(1:6, 4, replace = TRUE)
+[1] 6 5 1 1
+
+ |=============                                                                         |  15%
+| sample(1:6, 4, replace = TRUE) instructs R to randomly select four numbers between 1 and 6,
+| WITH replacement. Sampling with replacement simply means that each number is "replaced" after
+| it is selected, so that the same number can show up more than once. This is what we want
+| here, since what you roll on one die shouldn't affect what you roll on any of the others.
+
+...
+
+|================                                                                      |  18%
+| Now sample 10 numbers between 1 and 20, WITHOUT replacement. To sample without replacement,
+| simply leave off the 'replace' argument.
+
+> sample(1:20, 10)
+[1] 16 15 14  2 13  4  3  1 18 10
+
+
+| Since the last command sampled without replacement, no number appears more than once in the
+| output.
+
+
+|=====================                                                                 |  24%
+| LETTERS is a predefined variable in R containing a vector of all 26 letters of the English
+| alphabet. Take a look at it now.
+
+> LETTERS
+[1] "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W"
+[24] "X" "Y" "Z"
+
+
+|=======================                                                               |  27%
+| The sample() function can also be used to permute, or rearrange, the elements of a vector.
+| For example, try sample(LETTERS) to permute all 26 letters of the English alphabet.
+
+> sample(LETTERS)
+[1] "V" "Y" "R" "C" "Z" "J" "U" "O" "M" "T" "N" "L" "B" "I" "K" "D" "S" "W" "G" "H" "A" "Q" "P"
+[24] "F" "X" "E"
+
+
+|=============================                                                         |  33%
+| Now, suppose we want to simulate 100 flips of an unfair two-sided coin. This particular coin
+| has a 0.3 probability of landing 'tails' and a 0.7 probability of landing 'heads'.
+
+...
+
+|===============================                                                       |  36%
+| Let the value 0 represent tails and the value 1 represent heads. Use sample() to draw a
+| sample of size 100 from the vector c(0,1), with replacement. Since the coin is unfair, we
+| must attach specific probabilities to the values 0 (tails) and 1 (heads) with a fourth
+| argument, prob = c(0.3, 0.7). Assign the result to a new variable called flips.
+
+
+
+> flips <- sample(x ,c(0, 1), size = 100, tails = 0, heads = 1, prob = c(0.3, 0.7))
+Error in sample(x, c(0, 1), size = 100, tails = 0, heads = 1, prob = c(0.3,  : 
+ unused arguments (tails = 0, heads = 1)
+                                                                       
+> flips <- sample(x, size = 100, replacement = c(0, 1), prob = c(0.3, 0.7))
+Error in sample(x, size = 100, replacement = c(0, 1), prob = c(0.3, 0.7)) : 
+ unused argument (replacement = c(0, 1))
+                                                                      
+> flips <- sample(c(0, 1), size = 100, replace = TRUE, prob = c(0.3, 0.7))
+
+| View the contents of the flips variable.
+
+> flips
+[1] 1 1 1 1 1 1 1 0 1 0 1 1 1 1 1 0 1 1 1 0 0 1 1 1 0 1 1 0 0 1 0 0 1 0 1 1 0 0 1 0 1 1 1 0 0
+[46] 1 1 1 0 0 1 1 1 0 1 0 1 0 1 0 0 1 1 1 1 1 0 1 0 0 0 1 0 1 1 1 0 1 1 1 0 0 1 0 1 1 1 1 1 1
+[91] 0 1 0 1 1 0 0 0 0 0
+
+
+|====================================                                                  |  42%
+| Since we set the probability of landing heads on any given flip to be 0.7, we'd expect
+| approximately 70 of our coin flips to have the value 1. Count the actual number of 1s
+| contained in flips using the sum() function.
+
+> sum(1)
+[1] 1
+
+| Not quite right, but keep trying. Or, type info() for more options.
+
+| sum(flips) will add up all the 1s and 0s, giving you the total number of 1s in flips.
+
+> sum(flips)
+[1] 61
+
+
+|=======================================                                               |  45%
+| A coin flip is a binary outcome (0 or 1) and we are performing 100 independent trials (coin
+| flips), so we can use rbinom() to simulate a binomial random variable.
+
+
+
+  |==========================================                                            |  48%
+| Each probability distribution in R has an r*** function (for "random"), a d*** function (for
+| "density"), a p*** (for "probability"), and q*** (for "quantile"). We are most interested in
+| the r*** functions in this lesson, but I encourage you to explore the others on your own.
+
+...
+
+  |============================================                                          |  52%
+| A binomial random variable represents the number of 'successes' (heads) in a given number of
+| independent 'trials' (coin flips). Therefore, we can generate a single random variable that
+| represents the number of heads in 100 flips of our unfair coin using rbinom(1, size = 100,
+| prob = 0.7). Note that you only specify the probability of 'success' (heads) and NOT the
+| probability of 'failure' (tails). Try it now.
+
+
+> rbinom(1, size = 100, prob = 0.7)
+[1] 71
+
+
+
+  |===============================================                                       |  55%
+| Equivalently, if we want to see all of the 0s and 1s, we can request 100 observations, each
+| of size 1, with success probability of 0.7. Give it a try, assigning the result to a new
+| variable called flips2.
+
+> flips2 <- sum(1, size = 100, prob = 0.7)
+
+| Nice try, but that's not exactly what I was hoping for. Try again. Or, type info() for more
+| options.
+
+| Call rbinom() with n = 100, size = 1, and prob = 0.7 and assign the result to flips2.
+
+> flips2 <- rbinom(n= 100, size = 1, prob = 0.7)
+
+| All that hard work is paying off!
+    
+    |==================================================                                    |  58%
+| View the contents of flips2.
+
+> flips2
+[1] 1 0 1 1 1 0 0 1 1 0 0 1 0 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 0 0 1 0 1 0 1 1 1 1 0 1 1 1 1 1 1
+[46] 0 1 0 1 1 1 1 1 0 1 1 0 0 1 1 0 1 0 1 0 1 1 1 1 1 1 1 1 0 1 1 0 0 1 1 1 1 1 1 1 1 0 1 0 1
+[91] 0 0 1 1 1 1 1 1 1 1
+
+
+|====================================================                                  |  61%
+| Now use sum() to count the number of 1s (heads) in flips2. It should be close to 70!
+    
+    > sum(flips2)
+[1] 73
+
+
+|=========================================================                             |  67%
+| The standard normal distribution has mean 0 and standard deviation 1. As you can see under
+| the 'Usage' section in the documentation, the default values for the 'mean' and 'sd'
+| arguments to rnorm() are 0 and 1, respectively. Thus, rnorm(10) will generate 10 random
+| numbers from a standard normal distribution.
+
+Usage
+dnorm(x, mean = 0, sd = 1, log = FALSE)
+pnorm(q, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
+qnorm(p, mean = 0, sd = 1, lower.tail = TRUE, log.p = FALSE)
+rnorm(n, mean = 0, sd = 1)
+
+Arguments
+x, q	vector of quantiles.
+
+p	vector of probabilities.
+
+n	number of observations. If length(n) > 1, the length is taken to be the number required.
+
+mean	vector of means.
+
+sd	vector of standard deviations.
+
+log, log.p	logical; if TRUE, probabilities p are given as log(p).
+
+lower.tail	logical; if TRUE (default), probabilities are 𝑃[𝑋 ≤𝑥]P[X≤x] otherwise, 𝑃[𝑋>𝑥]P[X>x].
+
+
+Give it a try.
+
+> rnorm(10)
+[1]  0.3533307  0.6678279  0.1149836 -0.5080067 -0.9056944  0.3816917  0.9211418  0.2282601
+[9] -0.1986146  0.8366827
+
+
+| Now do the same, except with a mean of 100 and a standard deviation of 25.
+
+> rnorm(10, mean = 100, sd = 25)
+[1] 126.38363 123.94862 120.84698  95.76811  89.88916 107.39004  94.20314  88.79804 100.55777
+[10] 101.11168
+
+
+|===============================================================                       |  73%
+| Finally, what if we want to simulate 100 *groups* of random numbers, each containing 5 values
+| generated from a Poisson distribution with mean 10? Let's start with one group of 5 numbers,
+| then I'll show you how to repeat the operation 100 times in a convenient and compact way.
+
+...
+
+|=================================================================                     |  76%
+| Generate 5 random values from a Poisson distribution with mean 10. Check out the
+| documentation for rpois() if you need help.
+
+> ?rpois
+> rpois(5, mean = 10)
+Error in rpois(5, mean = 10) : unused argument (mean = 10)
+
+> rpois(5, 10)
+[1]  8  8  8  7 15
+
+|====================================================================                  |  79%
+| Now use replicate(100, rpois(5, 10)) to perform this operation 100 times. Store the result in
+| a new variable called my_pois.
+
+> my_pois <- replicate(100, rpois(5, 10))
+
+> my_pois
+[,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13] [,14] [,15] [,16]
+[1,]    5    7   14   10   11   12    9    4    7     7     9    13    14     8    14    10
+[2,]   11    9   10   13   11   11   14   10   11    16    14    13     9    10     3    15
+[3,]    7   14   14   12   10   11   13    6    9     9    11    14    11    10    12     9
+[4,]    6    7   13   10   11   15    7    6   13    13    18    11    12    10    11     9
+[5,]   12   16    5   13    5   10    9   11    8     6     7     8    15    10     9    10
+[,17] [,18] [,19] [,20] [,21] [,22] [,23] [,24] [,25] [,26] [,27] [,28] [,29] [,30] [,31]
+[1,]    10     7     8    15    13     5    12     8    16    12     8    19     8     8     8
+[2,]     4     7    14     6     8     9    14     9    16    11    11     7     8     9     9
+[3,]    14    14    11     9    10    10    13     4     9    10    12     9     8    10    11
+[4,]    12    13    14    11    11     8     6    12     7     5     8     5    10     8    10
+[5,]    12    12    10    13     6    13    11    15     8    11     7     9     9    10    12
+[,32] [,33] [,34] [,35] [,36] [,37] [,38] [,39] [,40] [,41] [,42] [,43] [,44] [,45] [,46]
+[1,]    14    10     7    10     7    11    10     6     8     9    13     9    12    11    18
+[2,]     2     9     8    11    10     9    13     5    12    10     9     9    10     7    11
+[3,]    10    10    13     7     9    10     3    12    15     8    15    11     8    10    10
+[4,]    13     7    12     7     8    11     7    12    15    12     8    13    13    10    12
+[5,]    12    13    11    13     9    10     9    11     8    12    10    11    10     9    16
+[,47] [,48] [,49] [,50] [,51] [,52] [,53] [,54] [,55] [,56] [,57] [,58] [,59] [,60] [,61]
+[1,]     3     9     8    14    10    14     7    10    10    11     8     8     9    14     6
+[2,]    13     8    10    10     3     8    15     5     7    10    13    11    14     7    11
+[3,]    11    12     8    10    12     9     9     7    11     9    10     7    10     6     5
+[4,]     5    11    11    14    13     7    12     5    21    11    13    10    14     8     7
+[5,]    11    12    11    13    10    15     8    12     7     5    10    17    10    14    16
+[,62] [,63] [,64] [,65] [,66] [,67] [,68] [,69] [,70] [,71] [,72] [,73] [,74] [,75] [,76]
+[1,]    13     9     9    15    13     6     9     8    11     8    13    16     6    10    12
+[2,]     6     8    17    11    10     7    19     8     9    10     2    10     9    12    11
+[3,]    12    16    10    10     8    17     9     7    11    11    13    13     7     8    13
+[4,]    10     7     6     8     9     4    12    12    10     5     7    13    16     5     5
+[5,]    17     8     9     9     8     6     9     7     8    10    13     7     7    16     6
+[,77] [,78] [,79] [,80] [,81] [,82] [,83] [,84] [,85] [,86] [,87] [,88] [,89] [,90] [,91]
+[1,]     9     8     4     7    15     7    12    11    12    13    14    19     9    13     5
+[2,]    11     8     5    14     8     9     9    12    10    13    12     5    14     9    14
+[3,]     9    12     6    11    11     7     9    14    12     9    13    10    10     6     7
+[4,]    12    12    12    11    13    12    10     6    10     8     7    12    12    14    11
+[5,]    12     9     9     9    12     8     6     8    10     9    11    14    10    13     9
+[,92] [,93] [,94] [,95] [,96] [,97] [,98] [,99] [,100]
+[1,]     8    10     7    10     6     3     9    17      6
+[2,]     9     9     6    13    10     5    15    10      7
+[3,]    13     9    14    10    13    10     7     9     10
+[4,]    18    11     8    10    11     8    13    11     10
+[5,]    14    14    10    10    14     7     6     7     13
+
+
+|=========================================================================             |  85%
+| replicate() created a matrix, each column of which contains 5 random numbers generated from a
+| Poisson distribution with mean 10. Now we can find the mean of each column in my_pois using
+| the colMeans() function. Store the result in a variable called cm.
+
+
+> cm <- colMeans(my_pois)
+
+|============================================================================          |  88%
+| And let's take a look at the distribution of our column means by plotting a histogram with
+| hist(cm).
+
+> hist(cm)
+
+|=================================================================================     |  94%
+| All of the standard probability distributions are built into R, including exponential
+| (rexp()), chi-squared (rchisq()), gamma (rgamma()), .... Well, you see the pattern.
+
+
+
+
+
+
+
+
+
+
